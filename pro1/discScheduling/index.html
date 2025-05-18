@@ -1,0 +1,95 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Disk Scheduling Visualizer</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>Disk Scheduling Visualizer</h1>
+
+  <div class="input-area">
+    <label for="algorithm">Select Algorithm:</label>
+    <select id="algorithm">
+      <option value="FCFS">FCFS</option>
+      <option value="SSTF">SSTF</option>
+      <option value="SCAN">SCAN</option>
+    </select>
+
+    <br/><br/>
+
+    <label for="requests">Disk Requests (comma separated):</label>
+    <input type="text" id="requests" value="82,170,43,140,24,16,190" />
+
+    <br/><br/>
+
+    <label for="head">Initial Head Position:</label>
+    <input type="number" id="head" value="50" />
+
+    <br/><br/>
+    <button onclick="runDiskScheduling()">Run</button>
+  </div>
+
+  <div class="output-area">
+    <h2>Seek Sequence Graph</h2>
+    <canvas id="seekChart" width="800" height="400"></canvas>
+    <h3 id="totalSeek"></h3>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Disk Scheduling Visualizer</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Disk Scheduling Visualizer</h1>
+
+    <div class="theme-toggle">
+      <label for="toggleTheme">🌙 Dark Mode</label>
+      <input type="checkbox" id="toggleTheme" />
+    </div>
+
+    <div class="input-area">
+      <label for="algorithm">Select Algorithm:</label>
+      <select id="algorithm">
+        <option value="FCFS">FCFS</option>
+        <option value="SSTF">SSTF</option>
+        <option value="SCAN">SCAN</option>
+      </select>
+
+      <label for="requests">Disk Requests (comma separated):</label>
+      <input type="text" id="requests" value="82,170,43,140,24,16,190" />
+
+      <label for="head">Initial Head Position:</label>
+      <input type="number" id="head" value="50" />
+
+      <button onclick="runDiskScheduling()">Run</button>
+    </div>
+
+    <div class="output-area">
+      <h2>Seek Sequence Graph</h2>
+      <canvas id="seekChart" width="800" height="400"></canvas>
+      <h3 id="totalSeek"></h3>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Toggle dark/light theme
+    const toggle = document.getElementById("toggleTheme");
+    toggle.addEventListener("change", () => {
+      document.body.classList.toggle("dark");
+    });
+  </script>
+</body>
+</html>
