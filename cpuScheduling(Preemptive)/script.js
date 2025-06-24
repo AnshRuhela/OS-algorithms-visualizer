@@ -8,14 +8,15 @@ function toggleQuantum() {
     col.style.display = showPriority ? "table-cell" : "none";
   });
 }
+
 let processCounter = 2;
+
 function addProcessRow() {
+  const processTable = document.getElementById("tableBody");
   const selectedAlgorithm = document.getElementById("algorithm").value;
   const showPriorityColumn = selectedAlgorithm === "Priority";
 
-  const processTable = document.getElementById("tableBody");
   const newRow = processTable.insertRow();
-
   newRow.innerHTML = `
     <td><input type="text" value="P${processCounter++}"></td>
     <td><input type="number" value="0"></td>
@@ -25,7 +26,52 @@ function addProcessRow() {
     };">
       <input type="number" value="1" placeholder="Priority"/>
     </td>
+    <td>
+      <button onclick="deleteProcessRow(this)">Delete</button>
+    </td>
   `;
+}
+
+function deleteProcessRow(button) {
+  const row = button.parentElement.parentElement;
+  row.parentElement.removeChild(row);
+}
+
+function calculateMetrics(processes) {
+  const totalProcesses = processes.length;
+  if (totalProcesses === 0) return { avgTat: 0, avgWt: 0, efficiency: 0 };
+
+  const totalTat = processes.reduce((sum, p) => sum + p.tat, 0);
+  const totalWt = processes.reduce((sum, p) => sum + p.wt, 0);
+  const totalBt = processes.reduce((sum, p) => sum + p.bt, 0);
+
+  const avgTat = totalTat / totalProcesses;
+  const avgWt = totalWt / totalProcesses;
+  const efficiency = totalBt > 0 ? 1 - avgWt / totalBt : 0;
+
+  return { avgTat: avgTat.toFixed(2), avgWt: avgWt.toFixed(2), efficiency: (efficiency * 100).toFixed(2) };
+}
+
+function renderSummaryTable(results) {
+  const summaryTable = document.getElementById("summaryTable");
+  summaryTable.innerHTML = `
+    <tr>
+      <th>Algorithm</th>
+      <th>Avg Turnaround Time</th>
+      <th>Avg Waiting Time</th>
+      <th>Efficiency (%)</th>
+    </tr>
+  `;
+
+  for (const [algo, metrics] of Object.entries(results)) {
+    const row = summaryTable.insertRow();
+    row.innerHTML = `
+      <td>${algo}</td>
+      <td>${metrics.avgTat}</td>
+      <td>${metrics.avgWt}</td>
+      <td>${metrics.efficiency}</td>
+    `;
+  }
 }
 
 function executeScheduler() {
@@ -40,20 +86,34 @@ function executeScheduler() {
     const priorityVal = row.cells[3]?.children[0]
       ? parseInt(row.cells[3].children[0].value)
       : 0;
+    if (isNaN(arrivalTime) || isNaN(burstTime) || burstTime <= 0 || (row.cells[3]?.children[0] && isNaN(priorityVal))) {
+      alert("Please enter valid numbers for Arrival Time, Burst Time, and Priority (if applicable). Burst Time must be positive.");
+      return;
+    }
     processList.push({ pid: processId, at: arrivalTime, bt: burstTime, priority: priorityVal });
   }
 
-  let result;
-  if (selectedAlgorithm === "SRTF") result = scheduleSRTF(processList);
-  else if (selectedAlgorithm === "LRTF") result = scheduleLRTF(processList);
-  else if (selectedAlgorithm === "RR") {
-    const quantumVal = parseInt(document.getElementById("quantum").value);
-    result = scheduleRR(processList, quantumVal);
-  } else if (selectedAlgorithm === "Priority")
-    result = schedulePriorityPreemptive(processList);
+  if (processList.length === 0) {
+    alert("Please add at least one process.");
+    return;
+  }
 
-  renderGanttChart(result.GanttsChart);
-  renderResultTable(result.outputTable);
+  const quantumVal = parseInt(document.getElementById("quantum").value) || 2;
+  const allResults = {
+    SRTF: scheduleSRTF(processList),
+    LRTF: scheduleLRTF(processList),
+    RR: scheduleRR(processList, quantumVal),
+    Priority: schedulePriorityPreemptive(processList)
+  };
+
+  const summaryMetrics = {};
+  for (const [algo, result] of Object.entries(allResults)) {
+    summaryMetrics[algo] = calculateMetrics(result.outputTable);
+  }
+
+  renderSummaryTable(summaryMetrics);
+  renderGanttChart(allResults[selectedAlgorithm].GanttsChart);
+  renderResultTable(allResults[selectedAlgorithm].outputTable);
 }
 
 function scheduleSRTF(processes) {
@@ -72,7 +132,12 @@ function scheduleSRTF(processes) {
       continue;
     }
 
-    currentProc = available.reduce((a, b) => (a.rt < b.rt ? a : b));
+    currentProc = available.reduce((a, b) => {
+      if (a.rt === b.rt) {
+        return a.pid < b.pid ? a : b; // Lower PID wins if remaining times are equal
+      }
+      return a.rt < b.rt ? a : b; // Lower remaining time wins
+    });
 
     if (!ganttData.length || ganttData[ganttData.length - 1].pid !== currentProc.pid) {
       ganttData.push({ pid: currentProc.pid, start: currentTime });
@@ -111,7 +176,12 @@ function scheduleLRTF(processes) {
       continue;
     }
 
-    const currentProc = available.reduce((a, b) => (a.rt > b.rt ? a : b));
+    const currentProc = available.reduce((a, b) => {
+      if (a.rt === b.rt) {
+        return a.pid < b.pid ? a : b; // Lower PID wins if remaining times are equal
+      }
+      return a.rt > b.rt ? a : b; // Higher remaining time wins
+    });
 
     if (!ganttData.length || ganttData[ganttData.length - 1].pid !== currentProc.pid) {
       ganttData.push({ pid: currentProc.pid, start: currentTime });
@@ -196,9 +266,12 @@ function schedulePriorityPreemptive(processes) {
       continue;
     }
 
-    const currentProc = available.reduce((a, b) =>
-      a.priority < b.priority ? a : b
-    );
+    const currentProc = available.reduce((a, b) => {
+      if (a.priority === b.priority) {
+        return a.pid < b.pid ? a : b; // Lower PID wins if priorities are equal
+      }
+      return a.priority < b.priority ? a : b; // Lower priority value wins
+    });
 
     if (!ganttData.length || ganttData[ganttData.length - 1].pid !== currentProc.pid) {
       ganttData.push({ pid: currentProc.pid, start: currentTime });
