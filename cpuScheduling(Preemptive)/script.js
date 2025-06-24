@@ -57,16 +57,16 @@ function executeScheduler() {
 }
 
 function scheduleSRTF(processes) {
-  const readyQueue = processes.map((p) => ({ ...p, rt: p.bt }));
+  const ProcessWrt = processes.map((p) => ({ ...p, rt: p.bt }));
   let currentTime = 0,
     finished = 0;
-  const total = readyQueue.length;
+  const total = ProcessWrt.length;
   const ganttData = [];
   const resultData = [];
   let currentProc = null;
 
   while (finished < total) {
-    const available = readyQueue.filter((p) => p.at <= currentTime && p.rt > 0);
+    const available = ProcessWrt.filter((p) => p.at <= currentTime && p.rt > 0);
     if (available.length === 0) {
       currentTime++;
       continue;
@@ -97,15 +97,15 @@ function scheduleSRTF(processes) {
 }
 
 function scheduleLRTF(processes) {
-  const readyQueue = processes.map((p) => ({ ...p, rt: p.bt }));
+  const ProcessWrt = processes.map((p) => ({ ...p, rt: p.bt }));
   let currentTime = 0,
     finished = 0;
-  const total = readyQueue.length;
+  const total = ProcessWrt.length;
   const ganttData = [];
   const resultData = [];
 
   while (finished < total) {
-    const available = readyQueue.filter((p) => p.at <= currentTime && p.rt > 0);
+    const available = ProcessWrt.filter((p) => p.at <= currentTime && p.rt > 0);
     if (available.length === 0) {
       currentTime++;
       continue;
@@ -137,13 +137,13 @@ function scheduleLRTF(processes) {
 
 function scheduleRR(processes, timeQuantum) {
   const queue = [];
-  const readyQueue = processes.map((p) => ({ ...p, rt: p.bt }));
+  const ProcessWrt = processes.map((p) => ({ ...p, rt: p.bt }));
   const ganttData = [];
   const resultData = [];
   let currentTime = 0;
 
   const getArrivals = () =>
-    readyQueue.filter((p) => p.at <= currentTime && p.rt > 0 && !queue.includes(p));
+    ProcessWrt.filter((p) => p.at <= currentTime && p.rt > 0 && !queue.includes(p));
   const completedSet = new Set();
 
   while (true) {
@@ -151,7 +151,7 @@ function scheduleRR(processes, timeQuantum) {
     queue.push(...newEntries);
 
     if (queue.length === 0) {
-      if (readyQueue.every((p) => p.rt === 0)) break;
+      if (ProcessWrt.every((p) => p.rt === 0)) break;
       currentTime++;
       continue;
     }
@@ -164,8 +164,8 @@ function scheduleRR(processes, timeQuantum) {
 
     ganttData.push({ pid: currentProc.pid, start, end: currentTime });
 
-    const freshArrivals = getArrivals();
-    queue.push(...freshArrivals);
+    const newArrivals = getArrivals();
+    queue.push(...newArrivals);
 
     if (currentProc.rt > 0) {
       queue.push(currentProc);
@@ -182,15 +182,15 @@ function scheduleRR(processes, timeQuantum) {
 }
 
 function schedulePriorityPreemptive(processes) {
-  const readyQueue = processes.map((p) => ({ ...p, rt: p.bt }));
+  const ProcessWrt = processes.map((p) => ({ ...p, rt: p.bt }));
   let currentTime = 0,
     finished = 0;
-  const total = readyQueue.length;
+  const total = ProcessWrt.length;
   const ganttData = [];
   const resultData = [];
 
   while (finished < total) {
-    const available = readyQueue.filter((p) => p.at <= currentTime && p.rt > 0);
+    const available = ProcessWrt.filter((p) => p.at <= currentTime && p.rt > 0);
     if (available.length === 0) {
       currentTime++;
       continue;

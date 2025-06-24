@@ -144,12 +144,11 @@ function runPriority(procList) {
 
   return { Gantts, finalTable };
 }
-// fcfs algo start
 function runFCFS(procList) {
   const procs = [...procList].sort((a, b) => a.at - b.at);
   let time = 0;
-  let Gantts = [], // gants chart print karne ke liye
-    finalTable = []; // output table print karne ke liye
+  let Gantts = [], 
+    finalTable = []; 
 
   for (let p of procs) {
     const start = Math.max(time, p.at);

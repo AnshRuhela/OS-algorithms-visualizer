@@ -109,7 +109,7 @@ function renderTable(pages, history, status, pageFaults) {
 
   const table = document.createElement("table");
   const headerRow = document.createElement("tr");
-  headerRow.appendChild(document.createElement("th")); // top-left empty
+  headerRow.appendChild(document.createElement("th")); 
 
   pages.forEach((page, i) => {
     const th = document.createElement("th");
