@@ -6,19 +6,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OS Algorithm Visualizer</title>
   <link rel="stylesheet" href="style1.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
-  <div class="container">
+  <main class="container">
     <h1>OS Algorithm Visualizer</h1>
     <div class="button-container">
-      <a href="cpuScheduling (Non -preemptive)/index.html" class="main-button">🧮 CPU Scheduling (Non-preemptive)</a>
-      <a href="cpuScheduling(preemptive)/index.html" class="main-button">⚙️ CPU Scheduling (Preemptive)</a>
-      <a href="pageReplacement/index.html" class="main-button">📄 Page Replacement</a>
-      <a href="discScheduling/index.html" class="main-button">💽 Disk Scheduling</a>
+      <a href="cpuScheduling (Non -preemptive)/index.html" class="main-button" role="button" aria-label="Navigate to Non-preemptive CPU Scheduling">
+        <i class="fas fa-microchip"></i>
+        <span>CPU Scheduling (Non-preemptive)</span>
+      </a>
+      <a href="cpuScheduling(preemptive)/index.html" class="main-button" role="button" aria-label="Navigate to Preemptive CPU Scheduling">
+        <i class="fas fa-cogs"></i>
+        <span>CPU Scheduling (Preemptive)</span>
+      </a>
+      <a href="pageReplacement/index.html" class="main-button" role="button" aria-label="Navigate to Page Replacement Algorithms">
+        <i class="fas fa-file-alt"></i>
+        <span>Page Replacement</span>
+      </a>
+      <a href="discScheduling/index.html" class="main-button" role="button" aria-label="Navigate to Disk Scheduling Algorithms">
+        <i class="fas fa-hdd"></i>
+        <span>Disk Scheduling</span>
+      </a>
     </div>
-  </div>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const buttons = document.querySelectorAll(".main-button");
+      buttons.forEach((button, index) => {
+        setTimeout(() => {
+          button.style.opacity = "1";
+          button.style.transform = "translateY(0)";
+        }, index * 200);
+      });
+    });
+  </script>
 </body>
 
 </html>
