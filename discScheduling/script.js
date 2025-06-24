@@ -52,8 +52,7 @@ function sstf(requests, head) {
 
 function scan(requests, head) {
   let diskSize = 200;
-  let left = [],
-    right = [];
+  let left = [], right = [];
   let current = head;
   let sequence = [];
   let total = 0;
@@ -147,7 +146,75 @@ function drawChart(sequence, totalSeek) {
     },
   });
 
-  document.getElementById(
-    "totalSeek"
-  ).textContent = `Total Seek Time: ${totalSeek}`;
+  document.getElementById("totalSeek").textContent = `Total Seek Time: ${totalSeek}`;
+}
+
+let comparisonChart = null;
+
+function compareAlgorithms() {
+  const requests = document
+    .getElementById("requests")
+    .value.split(",")
+    .map(Number);
+  const head = parseInt(document.getElementById("head").value);
+
+  if (isNaN(head) || requests.some(isNaN)) {
+    alert("Please enter valid head and request values.");
+    return;
+  }
+
+  const fcfsResult = fcfs(requests, head);
+  const sstfResult = sstf(requests, head);
+  const scanResult = scan(requests, head);
+
+  const labels = ["FCFS", "SSTF", "SCAN"];
+  const seekTimes = [
+    fcfsResult.totalSeek,
+    sstfResult.totalSeek,
+    scanResult.totalSeek,
+  ];
+
+  const ctx = document.getElementById("comparisonChart").getContext("2d");
+
+  if (comparisonChart) comparisonChart.destroy();
+
+  comparisonChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Total Seek Time",
+          data: seekTimes,
+          backgroundColor: ["#3498db", "#2ecc71", "#e74c3c"],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (context) => `Seek Time: ${context.raw}`,
+          },
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: "Total Seek Time",
+          },
+        },
+        x: {
+          title: {
+            display: true,
+            text: "Algorithms",
+          },
+        },
+      },
+    },
+  });
 }
