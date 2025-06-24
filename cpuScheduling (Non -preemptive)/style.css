@@ -1,124 +1,334 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+/* style.css */
+:root {
+  --primary: #3a86ff;
+  --secondary: #8338ec;
+  --accent: #ff006e;
+  --dark: #1a1a2e;
+  --light: #f8f9fa;
+  --success: #06d6a0;
+  --warning: #ffbe0b;
+  --gray: #6c757d;
+  --dark-gray: #495057;
+}
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  transition: all 0.3s ease;
 }
 
 body {
   font-family: "Roboto", sans-serif;
-  background-color: #eff4f0;
-  color: #333;
-  padding: 20px;
+  background-color: #f8f9fa;
+  color: var(--dark);
+  padding: 2rem;
+  min-height: 100vh;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(58, 134, 255, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(255, 0, 110, 0.05) 0%, transparent 20%);
+  animation: bgPulse 15s infinite alternate;
+}
+
+@keyframes bgPulse {
+  0% { background-position: 10% 20%, 90% 80%; }
+  100% { background-position: 15% 25%, 85% 75%; }
 }
 
 .container {
   max-width: 1200px;
-  margin: auto;
+  margin: 0 auto;
+  animation: fadeIn 0.8s ease-out;
 }
 
-h1,
-h2 {
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h1, h2 {
   text-align: center;
-  margin-bottom: 20px;
-  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  color: var(--dark);
+  position: relative;
 }
 
-.input-area {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
+h1 {
+  font-size: 2.5rem;
+  padding-bottom: 0.5rem;
+  margin-top: 1rem;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 2px;
+}
+
+h2 {
+  font-size: 1.8rem;
+  margin-top: 2.5rem;
+  color: var(--dark-gray);
+}
+
+.input-area, .output-area {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-area:hover, .output-area:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
 }
 
 .input-area label {
   display: block;
-  margin-bottom: 10px;
-  font-weight: bold;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: var(--dark-gray);
 }
 
-.input-area select,
-.input-area input[type="number"],
-.input-area input[type="text"] {
+.input-area select {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid var(--gray);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: white;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+}
+
+.input-area select:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 table thead {
-  background-color: #3498db;
-  color: #fff;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  color: white;
 }
 
-table th,
-table td {
-  padding: 12px;
-  border: 1px solid #ddd;
+table th {
+  padding: 1rem;
   text-align: center;
+  font-weight: 500;
+  position: relative;
+}
+
+table td {
+  padding: 0.8rem;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  text-align: center;
+  background-color: white;
 }
 
 table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: rgba(58, 134, 255, 0.03);
+}
+
+table tbody tr:hover td {
+  background-color: rgba(58, 134, 255, 0.08);
+  transform: scale(1.01);
 }
 
 .priority-col {
   display: none;
 }
 
+input[type="text"], input[type="number"] {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 2px solid var(--gray);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: white;
+}
+
+input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
+}
+
 .button-group {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
 
-.button-group button {
-  padding: 10px 20px;
-  background-color: #3498db;
-  color: #fff;
+button {
+  padding: 0.8rem 1.5rem;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  color: white;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.button-group button:hover {
-  background-color: #2980b9;
-}
-
-.output-area {
-  background-color: #ffffff;
-  padding: 20px;
   border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+button:hover::before {
+  left: 100%;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+  transform: translateY(0);
 }
 
 .gantt-chart {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: center;
   flex-wrap: wrap;
-  margin-top: 20px;
+  margin: 2rem 0;
+  gap: 0.3rem;
+  min-height: 5rem;
+  background-color: rgba(0, 0, 0, 0.02);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px dashed var(--gray);
 }
 
 .gantt-block {
-  padding: 10px;
-  background-color: #6fcf97;
-  margin: 5px;
-  border-radius: 4px;
+  padding: 0.8rem 1rem;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  margin: 0;
+  border-radius: 6px;
   color: white;
-  min-width: 60px;
+  min-width: 4rem;
   text-align: center;
+  font-weight: 500;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  animation: blockAppear 0.5s ease-out;
 }
 
-.output-table {
-  margin-top: 20px;
+@keyframes blockAppear {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.gantt-block:hover {
+  transform: scale(1.05);
+  z-index: 1;
+}
+
+.gantt-block::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.gantt-time {
+  font-size: 0.7rem;
+  margin-top: 0.3rem;
+  opacity: 0.8;
+}
+
+.output-table, .summary-table {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.output-table th {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+.summary-table th {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  .input-area, .output-area {
+    padding: 1.5rem;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  button {
+    width: 100%;
+  }
+  
+  table th, table td {
+    padding: 0.6rem 0.4rem;
+    font-size: 0.9rem;
+  }
+  
+  .gantt-block {
+    min-width: 3rem;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
 }

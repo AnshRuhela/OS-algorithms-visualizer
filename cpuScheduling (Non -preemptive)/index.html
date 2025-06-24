@@ -5,56 +5,93 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CPU Scheduling Visualizer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <div class="container">
+  <main class="container">
     <h1>CPU Scheduling Visualizer</h1>
 
-    <div class="input-area">
-      <label for="algorithm">Choose Algorithm:</label>
-      <select id="algorithm" onchange="togglePriority()">
-        <option value="FCFS">FCFS</option>
-        <option value="SJFS">SJFS</option>
-        <option value="LJFS">LJFS</option>
-        <option value="Priority">Priority Scheduling</option>
-      </select>
+    <section class="input-area card animate" role="region" aria-label="Input Process Data">
+      <div class="input-header">
+        <label for="algorithm">Choose Algorithm:</label>
+        <select id="algorithm" onchange="togglePriority()">
+          <option value="FCFS">FCFS</option>
+          <option value="SJFS">SJFS</option>
+          <option value="LJFS">LJFS</option>
+          <option value="Priority">Priority Scheduling</option>
+        </select>
+      </div>
 
-      <table id="inputTable">
-        <thead>
+      <table id="inputTable" aria-label="Process Input Table">
+        <thead class="table-header">
           <tr>
             <th>Process ID</th>
             <th>Arrival Time</th>
             <th>Burst Time</th>
             <th class="priority-col">Priority</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody id="tableBody">
-          <tr>
-            <td><input type="text" value="P1"></td>
-            <td><input type="number" value="0"></td>
-            <td><input type="number" value="5"></td>
-            <td class="priority-col"><input type="number" value="1" placeholder="Priority" /></td>
+          <tr class="animate-row">
+            <td><input type="text" name="pid" value="P1" aria-label="Process ID"></td>
+            <td><input type="number" name="at" min="0" value="0" aria-label="Arrival Time"></td>
+            <td><input type="number" name="bt" min="1" value="5" aria-label="Burst Time"></td>
+            <td class="priority-col"><input type="number" name="priority" min="0" value="1" placeholder="Priority" aria-label="Priority"></td>
+            <td><button onclick="deleteProcessRow(this)" aria-label="Delete Process Row"><i class="fas fa-trash"></i></button></td>
           </tr>
         </tbody>
       </table>
 
       <div class="button-group">
-        <button onclick="addRow()">Add Process</button>
-        <button onclick="runScheduler()">Run</button>
+        <button onclick="addProcessRow()" aria-label="Add New Process"><i class="fas fa-plus"></i> Add Process</button>
+        <button onclick="executeScheduler()" aria-label="Run Scheduling Algorithm"><i class="fas fa-play"></i> Run</button>
       </div>
-    </div>
+    </section>
 
-    <div class="output-area">
+    <section class="output-area card animate" role="region" aria-label="Scheduling Results">
       <h2>Gantt Chart</h2>
       <div id="ganttChart" class="gantt-chart"></div>
       <h2>Process Details</h2>
-      <table id="outputTable" class="output-table"></table>
-    </div>
-  </div>
+      <table id="outputTable" class="output-table" aria-label="Process Details Table"></table>
+      <h2>Algorithm Comparison</h2>
+      <table id="summaryTable" class="summary-table" aria-label="Algorithm Comparison Table"></table>
+    </section>
+  </main>
+  <script>
+    // Animation for invalid input shake effect
+    function shakeInput(input) {
+      input.classList.add('shake');
+      setTimeout(() => input.classList.remove('shake'), 500);
+    }
 
+    // Override addProcessRow to add animation
+    const originalAddProcessRow = addProcessRow;
+    addProcessRow = function() {
+      originalAddProcessRow();
+      const rows = document.querySelectorAll('#tableBody tr');
+      const newRow = rows[rows.length - 1];
+      newRow.classList.add('animate-row');
+    };
+
+    // Validate inputs on Run button click
+    document.querySelector('button[onclick="executeScheduler()"]').addEventListener('click', () => {
+      const inputs = document.querySelectorAll('#tableBody input');
+      let valid = true;
+      inputs.forEach(input => {
+        if (!input.value || (input.type === 'number' && input.value < input.min)) {
+          shakeInput(input);
+          valid = false;
+        }
+      });
+      if (!valid) {
+        alert('Please fill all fields correctly.');
+      }
+    });
+  </script>
   <script src="script.js"></script>
 </body>
 
